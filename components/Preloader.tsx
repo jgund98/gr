@@ -48,28 +48,41 @@ export default function Preloader() {
           onClick={skip}
           aria-hidden
         >
-          <svg
-            viewBox={`0 0 ${GLYPH_W} ${GLYPH_H}`}
-            className="h-[30vh] max-h-[300px] w-auto max-w-[70vw]"
-          >
-            <motion.path
-              d={glyphD()}
-              fill="none"
-              stroke="#88c047"
-              strokeWidth={10}
-              strokeDasharray={GLYPH_PERIMETER}
-              initial={{ strokeDashoffset: GLYPH_PERIMETER }}
-              animate={{ strokeDashoffset: 0 }}
-              transition={{ duration: 1.15, ease: [0.65, 0, 0.35, 1] }}
-            />
-            <motion.path
-              d={glyphD()}
-              fill="#88c047"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.05, duration: 0.45 }}
-            />
-          </svg>
+          <div className="flex flex-col items-center gap-7">
+            <svg
+              viewBox={`0 0 ${GLYPH_W} ${GLYPH_H}`}
+              className="h-[28vh] max-h-[280px] w-auto max-w-[64vw]"
+            >
+              <motion.path
+                d={glyphD()}
+                fill="none"
+                stroke="#88c047"
+                strokeWidth={10}
+                strokeDasharray={GLYPH_PERIMETER}
+                initial={{ strokeDashoffset: GLYPH_PERIMETER }}
+                animate={{ strokeDashoffset: 0 }}
+                transition={{ duration: 1.15, ease: [0.65, 0, 0.35, 1] }}
+              />
+              <motion.path
+                d={glyphD()}
+                fill="#88c047"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.05, duration: 0.45 }}
+              />
+            </svg>
+            {/* his actual wordmark, rising out of a mask under the mark */}
+            <div className="overflow-hidden">
+              <motion.img
+                src="/brand/gr-wordmark.png"
+                alt=""
+                className="block h-auto w-[min(46vw,240px)]"
+                initial={{ y: "115%" }}
+                animate={{ y: 0 }}
+                transition={{ delay: 1.2, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              />
+            </div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
