@@ -6,18 +6,19 @@
  */
 
 // intrinsic strip: 3327 × 192 (2x). Displayed at h/192 scale.
-const STRIP_W = 3327;
+const STRIP_W = 3328;
 const STRIP_H = 192;
 
 function band(displayH: number) {
-  const w = (STRIP_W * displayH) / STRIP_H;
+  // integer-exact tiles: fractional background tiles blank out on some
+  // mobile GPUs mid-animation (the "logos vanish then reappear" bug)
+  const w = (STRIP_W * displayH) / STRIP_H; // 3328×(72|96)/192 → 1248 | 1664
   return {
     height: displayH,
-    // two loop-lengths wide; the -50% translate lands exactly on a repeat
     width: w * 2,
-    backgroundImage: "url(/brand/logo-strip.png)",
+    backgroundImage: "url(/brand/logo-strip2.png)",
     backgroundRepeat: "repeat-x",
-    backgroundSize: `${w}px ${displayH}px`,
+    backgroundSize: w + "px " + displayH + "px",
   } as const;
 }
 
@@ -28,9 +29,9 @@ export default function Marquee() {
       role="img"
       aria-label="GDR Development, Renny Realty, Renny Insurance Group, Millennium Health Advisors, Sycamore Behavioral Health, Helping Hand Home Warranty, Decorate One"
     >
-      <link rel="preload" as="image" href="/brand/logo-strip.png" />
+      <link rel="preload" as="image" href="/brand/logo-strip2.png" />
       {/* mobile */}
-      <div className="animate-marquee md:hidden [animation-duration:26s]" style={band(76)} />
+      <div className="animate-marquee md:hidden [animation-duration:26s]" style={band(72)} />
       {/* desktop */}
       <div className="animate-marquee hidden md:block [animation-duration:34s]" style={band(96)} />
     </div>
