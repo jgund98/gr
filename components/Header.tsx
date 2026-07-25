@@ -22,11 +22,28 @@ export default function Header() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    // On home the header stays transparent for the whole hero pin —
+    // it only solidifies once the page actually starts moving past it.
+    const threshold = () => {
+      if (pathname !== "/") return 24;
+      const hero = document.querySelector<HTMLElement>("section[aria-label='Gus Renny']");
+      if (!hero) return 24;
+      return Math.max(24, hero.offsetHeight - window.innerHeight - 8);
+    };
+    let t = threshold();
+    const onScroll = () => setScrolled(window.scrollY > t);
+    const onResize = () => {
+      t = threshold();
+      onScroll();
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     setOpen(false);
