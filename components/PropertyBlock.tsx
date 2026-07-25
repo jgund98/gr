@@ -78,7 +78,7 @@ export default function PropertyBlock({ p, eager = false }: { p: Property; eager
 
         {strip.length > 0 && (
           <div
-            data-lenis-prevent
+            
             className="mt-3 flex snap-x snap-proximity gap-3 overflow-x-auto overscroll-x-contain pb-2 [touch-action:pan-x_pan-y] [-webkit-overflow-scrolling:touch] [scrollbar-width:thin] [scrollbar-color:rgba(136,192,71,0.4)_transparent]"
             role="group"
             aria-label={`${p.type} photo gallery`}
