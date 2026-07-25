@@ -21,7 +21,7 @@ export default function Btn({
   const base = cn(
     "chamfer-sm group/btn inline-block overflow-hidden px-8 py-4 text-sm font-semibold transition-colors duration-300",
     variant === "solid" && "bg-green text-ink hover:bg-green-bright",
-    variant === "outline" && "border border-green text-green hover:bg-green hover:text-ink",
+    variant === "outline" && "border border-green bg-ink text-green hover:bg-green hover:text-ink",
     variant === "ink" && "bg-ink text-green hover:text-green-bright",
     className
   );
