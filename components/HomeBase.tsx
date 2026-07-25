@@ -51,7 +51,7 @@ export default function HomeBase() {
           <p className="tag-index">07 — Home base</p>
         </Reveal>
         <RevealLines
-          className="mt-4 max-w-4xl text-4xl leading-[1.06] sm:text-5xl md:text-7xl md:leading-[1.02] xl:text-8xl"
+          className="mt-4 max-w-5xl text-4xl leading-[1.06] sm:text-5xl md:text-7xl md:leading-[1.02]"
           lines={[<>West&nbsp;Palm&nbsp;Beach</>, <Scribble key="s">is&nbsp;home.</Scribble>]}
         />
         <Reveal delay={0.15}>

@@ -97,8 +97,8 @@ export default function StoryPage() {
           <Chapter
             year="1996"
             title={<>Miami Beach. The Century&nbsp;Hotel.</>}
-            image="/site/miami-beach.webp"
-            imageAlt="Boardwalk leading to the sand in Miami Beach"
+            image="/site/century.webp"
+            imageAlt="The Century Hotel on Ocean Drive, Miami Beach — art-deco facade with palms"
             flip
           >
             <p>
@@ -176,9 +176,8 @@ export default function StoryPage() {
               </h2>
               <p className="lede mt-6 max-w-xl text-mist">
                 Married, with kids — and if you ask Gus what he's proudest of,
-                it isn't on any deed. That's his answer, word for word: family
-                life is his best build. The photo is real, by the way. Job site,
-                daughter, stuffed lemur. That's the whole brand.
+                it isn't on any deed. That's his answer, word for word:
+                family life is his best&nbsp;build.
               </p>
             </Reveal>
           </div>

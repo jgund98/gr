@@ -74,7 +74,7 @@ export default function CareersForm() {
           name="message"
           rows={3}
           className="mt-2 w-full resize-none border border-line bg-ink px-4 py-3.5 text-paper outline-none transition-colors placeholder:text-faint focus:border-green"
-          placeholder="Three sentences is plenty."
+          placeholder="A few sentences is plenty."
         />
       </label>
 

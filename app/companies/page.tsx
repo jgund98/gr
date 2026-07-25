@@ -54,39 +54,36 @@ export default function CompaniesPage() {
                   <Reveal key={c.slug} delay={0.06 * i}>
                     <article
                       id={c.slug}
-                      className="chamfer group grid scroll-mt-28 gap-8 border border-line bg-ink-2 p-7 transition-colors duration-300 hover:border-green/50 md:grid-cols-12 md:items-center md:p-10"
+                      className="chamfer group grid scroll-mt-32 gap-7 border border-line bg-ink-2 p-7 transition-colors duration-300 hover:border-green/50 md:grid-cols-12 md:items-center md:gap-10 md:p-9"
                     >
-                      <div className="flex h-16 items-center md:col-span-3 md:h-20">
+                      {/* uniform, centered logo cell — icons and wordmarks share one optical box */}
+                      <div className="flex h-24 items-center justify-center border-b border-line pb-6 md:col-span-3 md:h-28 md:border-b-0 md:border-r md:pb-0 md:pr-8">
                         <Image
                           src={c.logo}
                           alt={`${c.name} logo`}
                           width={220}
-                          height={80}
-                          className="max-h-full w-auto object-contain"
+                          height={96}
+                          className="max-h-full max-w-[78%] w-auto object-contain"
                           style={
                             c.logoScale
-                              ? { transform: `scale(${c.logoScale})`, transformOrigin: "left center" }
+                              ? { transform: `scale(${c.logoScale})` }
                               : undefined
                           }
                         />
                       </div>
                       <div className="md:col-span-7">
-                        <h3 className="display text-2xl tracking-tight md:text-3xl">{c.name}</h3>
-                        <p className="mt-3 leading-relaxed text-mist">{c.body}</p>
+                        <h3 className="display text-2xl md:text-3xl">{c.name}</h3>
+                        <p className="mt-3 leading-relaxed text-mist md:text-lg">{c.body}</p>
                       </div>
                       <div className="md:col-span-2 md:text-right">
-                        {c.url ? (
-                          <a
-                            href={c.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="navline label inline-block pb-1 text-green"
-                          >
-                            Visit site&ensp;↗
-                          </a>
-                        ) : (
-                          <span className="label text-faint">Private</span>
-                        )}
+                        <a
+                          href={c.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="navline label inline-block pb-1 text-green"
+                        >
+                          Visit site&ensp;↗
+                        </a>
                       </div>
                     </article>
                   </Reveal>

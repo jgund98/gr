@@ -13,3 +13,5 @@ dev-server.log
 .env*
 .vercel
 .claude/
+
+.vercel

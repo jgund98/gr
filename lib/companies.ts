@@ -41,6 +41,7 @@ export const companies: Company[] = [
     logo: "/companies/renny-insurance.webp",
     line: "Protecting what the portfolio builds.",
     body: "Insurance built alongside real estate — coverage for the homes, the businesses, and the people behind them. The natural second half of a career spent building things worth protecting.",
+    url: "https://www.rennyinsurancegroup.com",
   },
   {
     slug: "millennium",
@@ -58,6 +59,7 @@ export const companies: Company[] = [
     logo: "/companies/sycamore.webp",
     line: "Behavioral health services.",
     body: "Behavioral health services — an investment in the side of health care that too often gets overlooked, run with the same operational discipline as everything else under the mark.",
+    url: "https://sycamorebh.com",
     logoScale: 1.2,
   },
   {
@@ -67,6 +69,7 @@ export const companies: Company[] = [
     logo: "/companies/helping-hand.webp",
     line: "Home warranty coverage.",
     body: "Home warranty protection — born from thirty years of knowing exactly what breaks in a house, when it breaks, and what it should honestly cost to fix.",
+    url: "https://www.helpinghandhw.com",
   },
   {
     slug: "decorate-one",
@@ -75,6 +78,7 @@ export const companies: Company[] = [
     logo: "/companies/decorate-one.webp",
     line: "Embroidery & printing.",
     body: "Custom embroidery and printing — the branding shop behind the portfolio's own gear, and for any business that wants its mark done right.",
+    url: "https://decorateone.com",
     logoScale: 0.9,
   },
 ];

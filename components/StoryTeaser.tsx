@@ -24,7 +24,7 @@ export default function StoryTeaser() {
       ref={ref}
       className="relative overflow-hidden border-y border-line bg-ink-2 py-24 md:py-32"
     >
-      <PalmShadow className="left-[-8%] top-[-4%] h-[26rem] w-[42rem] opacity-[0.12]" tone="green" />
+      <PalmShadow className="left-[-6%] top-[-8%] h-[34rem] w-[30rem] opacity-[0.22]" tone="green" />
 
       {/* the year, drifting behind the copy column */}
       <motion.p
@@ -32,7 +32,7 @@ export default function StoryTeaser() {
         style={reduced ? undefined : { y: yearY }}
         aria-hidden
       >
-        1996
+        1997
       </motion.p>
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 md:px-8 lg:grid-cols-12 lg:gap-16">

@@ -20,11 +20,11 @@ export default function PalmShadow({
   return (
     <div className={cn("pointer-events-none absolute select-none", className)} aria-hidden>
       <img
-        src={tone === "dark" ? "/brand/frond-ink.png" : "/brand/frond-green.png"}
+        src={tone === "dark" ? "/brand/palm-ink.png" : "/brand/palm-green.png"}
         alt=""
         className="animate-sway h-full w-full object-contain will-change-transform"
         style={{
-          transformOrigin: "0% 45%",
+          transformOrigin: "50% 92%",
           animationDelay: `${delay}s`,
           // `scale` is an independent property — it composes with the
           // sway keyframes instead of being overwritten by them
