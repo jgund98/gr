@@ -113,7 +113,7 @@ export default function Header() {
           >
             <Glyph className="pointer-events-none absolute -right-[18%] top-1/2 h-[74vh] w-auto -translate-y-1/2 text-green opacity-[0.07]" />
             <nav
-              className="relative flex flex-1 flex-col justify-center gap-2 px-8"
+              className="relative flex flex-1 flex-col justify-center gap-3 px-8 pt-28"
               aria-label="Mobile"
             >
               {[...links, { label: "Contact", href: "/contact" }].map((item, i) => (
@@ -131,13 +131,10 @@ export default function Header() {
                     <Link
                       href={item.href}
                       className={cn(
-                        "flex items-baseline gap-4 py-2 display text-5xl transition-colors",
+                        "block py-2 display text-[2.9rem] leading-none transition-colors",
                         pathname === item.href ? "text-green" : "text-paper active:text-green"
                       )}
                     >
-                      <span className="label !text-[0.65rem] text-green/70">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
                       {item.label}
                     </Link>
                   </motion.div>
