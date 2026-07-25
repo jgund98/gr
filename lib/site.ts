@@ -44,7 +44,7 @@ export const nav = [
 export const tickerLines = ["Est. 1997", "Palm Beach, FL", "GUSRENNY.COM"] as const;
 
 export const stats = [
-  { value: 2000, suffix: "+", label: "Properties bought, sold, renovated, or built" },
-  { value: 30, suffix: "", label: "Years of building since the Century Hotel" },
-  { value: 1997, suffix: "", label: "GR Investment Group founded", plain: true },
+  { value: 2000, suffix: "+", label: "Properties bought, sold, renovated, or built" },
+  { value: 30, suffix: "", label: "Years of building since the Century Hotel" },
+  { value: 1997, suffix: "", label: "GR Investment Group founded", plain: true },
 ] as const;

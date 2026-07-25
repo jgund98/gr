@@ -65,12 +65,12 @@ export default function StoryTeaser() {
           />
           <Reveal delay={0.1}>
             <p className="lede mt-7 max-w-xl text-mist">
-              New York born, Miami Beach made — his first project was the
-              renovation of the historic Century Hotel on Ocean Drive. Thirty
-              years and more than{" "}
+              New York born, Miami Beach made — his first project was restoring
+              the historic Century&nbsp;Hotel on Ocean&nbsp;Drive. Thirty years
+              and more than{" "}
               <em className="text-green-bright">two thousand properties</em>{" "}
-              later, the green square is on job sites all over Palm
-              Beach&nbsp;County.
+              later, the green square is on job sites all over
+              Palm&nbsp;Beach&nbsp;County.
             </p>
           </Reveal>
           <Reveal delay={0.18} className="mt-10">
