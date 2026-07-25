@@ -26,7 +26,8 @@ export const site = {
     },
   ],
   social: {
-    linkedin: "https://www.linkedin.com/in/gus-renny-b1348063",
+    instagram: "https://www.instagram.com/grenny12/",
+    facebook: "https://www.facebook.com/grenny1/",
   },
 } as const;
 

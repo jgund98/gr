@@ -29,14 +29,24 @@ export default function ContactPage() {
               >
                 {site.email}
               </a>
-              <a
-                href={site.social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="navline label mt-2 w-fit pb-1 text-paper/70 hover:text-paper"
-              >
-                LinkedIn&ensp;↗
-              </a>
+              <div className="mt-2 flex gap-6">
+                <a
+                  href={site.social.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="navline label w-fit pb-1 text-paper/70 hover:text-paper"
+                >
+                  Instagram&ensp;↗
+                </a>
+                <a
+                  href={site.social.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="navline label w-fit pb-1 text-paper/70 hover:text-paper"
+                >
+                  Facebook&ensp;↗
+                </a>
+              </div>
             </div>
           </Reveal>
 

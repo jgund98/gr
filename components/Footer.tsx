@@ -19,14 +19,24 @@ export default function Footer() {
               Real estate first — development, brokerage, insurance, and health,
               built over three decades under one&nbsp;mark.
             </p>
-            <a
-              href={site.social.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="navline label mt-6 inline-block pb-1 text-paper/70 hover:text-paper"
-            >
-              LinkedIn&ensp;↗
-            </a>
+            <div className="mt-6 flex gap-6">
+              <a
+                href={site.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="navline label inline-block pb-1 text-paper/70 hover:text-paper"
+              >
+                Instagram&ensp;↗
+              </a>
+              <a
+                href={site.social.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="navline label inline-block pb-1 text-paper/70 hover:text-paper"
+              >
+                Facebook&ensp;↗
+              </a>
+            </div>
           </div>
 
           <div className="md:col-span-3 md:border-l md:border-line md:px-10">

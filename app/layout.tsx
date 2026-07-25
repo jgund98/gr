@@ -61,7 +61,7 @@ const personJsonLd = {
     postalCode: "33409",
     addressCountry: "US",
   },
-  sameAs: [site.social.linkedin, "https://gdrdevelopment.com", "https://rennyrealty.com"],
+  sameAs: [site.social.instagram, site.social.facebook, "https://gdrdevelopment.com", "https://rennyrealty.com"],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
