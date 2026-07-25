@@ -1,7 +1,7 @@
 "use client";
 
 /* eslint-disable @next/next/no-img-element */
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -9,24 +9,124 @@ import {
   useReducedMotion,
   useScroll,
   useTransform,
+  type MotionValue,
 } from "motion/react";
 
 /**
- * Ground up — one of Gus' real builds assembles itself on scroll:
- * the lot is staked out, the plans draw in (a wireframe traced from
- * the actual photograph), then the finished house rises out of the
- * ground line until the photo stands complete.
- *
- * Layers are pre-baked images; everything animates with transform,
- * opacity, and one composited clip-path. No per-frame paints.
+ * The journey — a scroll-driven film in five scenes, every frame a real
+ * Gus asset: land, bones, plans, home, landmark. Scenes crossfade with
+ * slow push-ins like a trailer; two of them are actual motion footage.
+ * All transform/opacity — each scene is one composited layer.
  */
 
-const ACTS = [
-  { at: 0, word: "The lot.", note: "Southland Park, West Palm Beach" },
-  { at: 0.18, word: "The plans.", note: "Traced from the finished photograph" },
-  { at: 0.42, word: "The build.", note: "From the ground line up" },
-  { at: 0.74, word: "The home.", note: "One of Gus' real builds" },
-] as const;
+interface Scene {
+  word: string;
+  note: string;
+  src: string;
+  video?: boolean;
+  poster?: string;
+}
+
+const SCENES: Scene[] = [
+  {
+    word: "Land.",
+    note: "The Palm Beach shoreline",
+    src: "/videos/homebase.mp4",
+    video: true,
+    poster: "/site/homebase-poster.jpg",
+  },
+  {
+    word: "Bones.",
+    note: "A century-old frame, stripped honest",
+    src: "/site/bones.webp",
+  },
+  {
+    word: "Plans.",
+    note: "Traced from the finished photograph",
+    src: "/site/build-wire.webp",
+  },
+  {
+    word: "Home.",
+    note: "Filmed above one of Gus' rebuilds",
+    src: "/videos/hero-aerial.mp4",
+    video: true,
+    poster: "/site/hero-poster.webp",
+  },
+  {
+    word: "Legacy.",
+    note: "The Century Hotel, where it started",
+    src: "/site/century.webp",
+  },
+];
+
+const N = SCENES.length;
+
+function SceneLayer({
+  scene,
+  index,
+  progress,
+  inView,
+}: {
+  scene: Scene;
+  index: number;
+  progress: MotionValue<number>;
+  inView: boolean;
+}) {
+  // each scene owns an equal slice; crossfade bands overlap neighbours
+  const start = index / N;
+  const end = (index + 1) / N;
+  const fade = 0.06;
+  const opacity = useTransform(
+    progress,
+    index === 0
+      ? [0, end - fade, end + fade]
+      : index === N - 1
+        ? [start - fade, start + fade, 1]
+        : [start - fade, start + fade, end - fade, end + fade],
+    index === 0 ? [1, 1, 0] : index === N - 1 ? [0, 1, 1] : [0, 1, 1, 0]
+  );
+  // slow push-in across the scene's life
+  const scale = useTransform(progress, [start - fade, end + fade], [1.0, 1.1]);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [active, setActive] = useState(index === 0);
+  useMotionValueEvent(progress, "change", (p) => {
+    const on = p > start - 0.12 && p < end + 0.12;
+    if (on !== active) setActive(on);
+  });
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (active && inView) v.play().catch(() => {});
+    else v.pause();
+  }, [active, inView]);
+
+  return (
+    <motion.div className="absolute inset-0" style={{ opacity }}>
+      {scene.video ? (
+        <motion.video
+          ref={videoRef}
+          className="h-full w-full object-cover will-change-transform"
+          style={{ scale }}
+          src={scene.src}
+          poster={scene.poster}
+          muted
+          loop
+          playsInline
+          preload="none"
+        />
+      ) : (
+        <motion.img
+          src={scene.src}
+          alt=""
+          aria-hidden
+          className="h-full w-full object-cover will-change-transform"
+          style={{ scale }}
+        />
+      )}
+    </motion.div>
+  );
+}
 
 export default function GroundUp() {
   const ref = useRef<HTMLElement>(null);
@@ -34,103 +134,71 @@ export default function GroundUp() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
   const [act, setAct] = useState(0);
+  const [inView, setInView] = useState(false);
   useMotionValueEvent(scrollYProgress, "change", (p) => {
-    let next = 0;
-    for (let i = 0; i < ACTS.length; i++) if (p >= ACTS[i].at) next = i;
+    const next = Math.min(N - 1, Math.max(0, Math.floor(p * N)));
     if (next !== act) setAct(next);
   });
-
-  // the lot: boundary stakes draw in, then hold
-  const lotDraw = useTransform(scrollYProgress, [0.02, 0.16], [100, 0]);
-  const lotOpacity = useTransform(scrollYProgress, [0, 0.05, 0.62, 0.74], [0, 1, 1, 0]);
-  // the plans: wireframe breathes in, hands off to the build
-  const wireOpacity = useTransform(scrollYProgress, [0.16, 0.3, 0.62, 0.78], [0, 1, 1, 0]);
-  // the build: the photo rises from the ground line
-  const buildClip = useTransform(
-    scrollYProgress,
-    [0.42, 0.72],
-    ["inset(100% 0% 0% 0%)", "inset(0% 0% 0% 0%)"]
-  );
-  const photoScale = useTransform(scrollYProgress, [0.42, 1], [1.06, 1]);
-  const gridOpacity = useTransform(scrollYProgress, [0.62, 0.8], [1, 0]);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   if (reduced) {
     return (
       <section className="relative overflow-hidden border-y border-line bg-ink">
-        <img src="/site/build-photo.webp" alt="A restored historic home in Southland Park, West Palm Beach" className="h-auto w-full" />
+        <img
+          src="/site/build-photo.webp"
+          alt="A restored historic home in Southland Park, West Palm Beach"
+          className="h-auto w-full"
+        />
       </section>
     );
   }
 
   return (
-    <section ref={ref} aria-label="One of Gus' builds, from the ground up" className="relative h-[340svh]">
+    <section
+      ref={ref}
+      aria-label="The journey of a Gus build, in five scenes"
+      className="relative h-[480svh]"
+    >
       <div className="sticky top-0 h-[100svh] overflow-hidden border-y border-line bg-ink">
-        {/* drafting field */}
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            opacity: gridOpacity,
-            backgroundImage:
-              "linear-gradient(rgba(136,192,71,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(136,192,71,0.07) 1px, transparent 1px)",
-            backgroundSize: "72px 72px",
-          }}
-          aria-hidden
-        />
+        {SCENES.map((s, i) => (
+          <SceneLayer key={s.src} scene={s} index={i} progress={scrollYProgress} inView={inView} />
+        ))}
 
-        {/* the lot: surveyed boundary */}
-        <motion.svg
-          className="absolute inset-0 h-full w-full"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          style={{ opacity: lotOpacity }}
-          aria-hidden
-        >
-          <motion.path
-            d="M14 82 L38 74 L86 74 L86 92 L14 92 Z"
-            fill="none"
-            stroke="#88c047"
-            strokeOpacity="0.8"
-            strokeWidth="0.35"
-            pathLength={100}
-            strokeDasharray="100"
-            style={{ strokeDashoffset: lotDraw }}
-          />
-        </motion.svg>
+        {/* filmic grade: edges settle dark so the word always reads */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/90 via-transparent to-ink/40" aria-hidden />
 
-        {/* the plans: wireframe traced from the real photo */}
-        <motion.img
-          src="/site/build-wire.webp"
-          alt=""
-          aria-hidden
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{ opacity: wireOpacity }}
-        />
-
-        {/* the build: the real house rises from the ground line */}
-        <motion.div className="absolute inset-0" style={{ clipPath: buildClip }}>
-          <motion.img
-            src="/site/build-photo.webp"
-            alt="A restored historic home in Southland Park, West Palm Beach"
-            className="h-full w-full object-cover will-change-transform"
-            style={{ scale: photoScale }}
-          />
-        </motion.div>
-        <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-ink/90 to-transparent" aria-hidden />
-
-        {/* act titles */}
-        <div className="absolute inset-x-0 bottom-0 px-6 pb-12 md:px-14">
+        {/* the word */}
+        <div className="absolute inset-x-0 bottom-0 px-6 pb-12 md:px-14 md:pb-16">
           <AnimatePresence mode="wait">
             <motion.div
               key={act}
-              initial={{ opacity: 0, y: 34 }}
+              initial={{ opacity: 0, y: 36 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20, transition: { duration: 0.22 } }}
+              exit={{ opacity: 0, y: -22, transition: { duration: 0.22 } }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             >
-              <p className="label inline-block bg-green px-3 py-1.5 !text-ink">{ACTS[act].note}</p>
-              <p className="mt-3 display text-5xl md:text-8xl">{ACTS[act].word}</p>
+              <p className="label inline-block bg-green px-3 py-1.5 !text-ink">{SCENES[act].note}</p>
+              <p className="mt-3 display text-6xl md:text-9xl">{SCENES[act].word}</p>
             </motion.div>
           </AnimatePresence>
+          {/* scene rail */}
+          <div className="mt-6 flex gap-2" aria-hidden>
+            {SCENES.map((_, i) => (
+              <span
+                key={i}
+                className={
+                  "h-[3px] w-10 transition-colors duration-500 " +
+                  (i <= act ? "bg-green" : "bg-paper/15")
+                }
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
