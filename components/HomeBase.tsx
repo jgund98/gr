@@ -52,7 +52,7 @@ export default function HomeBase() {
         </Reveal>
         <RevealLines
           className="mt-4 max-w-5xl text-4xl leading-[1.06] sm:text-5xl md:text-7xl md:leading-[1.02]"
-          lines={[<>West&nbsp;Palm&nbsp;Beach</>, <Scribble key="s">is&nbsp;home.</Scribble>]}
+          lines={[<>West&nbsp;Palm&nbsp;Beach,</>, <Scribble key="s">Florida, is&nbsp;home.</Scribble>]}
         />
         <Reveal delay={0.15}>
           <p className="lede mt-7 max-w-xl text-paper/90">
