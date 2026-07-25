@@ -9,8 +9,9 @@ const frondD = fs.readFileSync(path.join(RAW, "frond1.txt"), "utf8").trim();
 
 // crown: fronds fanned around the trunk top; trunk: tapered with a slight lean
 const CROWN = [
-  { r: -105, s: 0.62 }, { r: -75, s: 0.8 }, { r: -45, s: 0.95 }, { r: -18, s: 1 },
-  { r: 8, s: 0.98 }, { r: 35, s: 0.9 }, { r: 65, s: 0.78 }, { r: 95, s: 0.6 },
+  { r: -160, s: 0.55 }, { r: -135, s: 0.7 }, { r: -110, s: 0.82 }, { r: -85, s: 0.92 },
+  { r: -60, s: 1 }, { r: -38, s: 1.02 }, { r: -16, s: 1 }, { r: 4, s: 0.98 },
+  { r: 26, s: 0.94 }, { r: 50, s: 0.85 }, { r: 76, s: 0.72 }, { r: 102, s: 0.58 },
 ].map(
   (f) =>
     `<g transform="rotate(${f.r}) scale(${f.s})"><path d="${frondD}" fill="currentColor"/></g>`

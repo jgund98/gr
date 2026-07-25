@@ -176,7 +176,7 @@ export default function ReelTheater() {
                   className={
                     "relative shrink-0 transition-[transform,opacity] duration-500 ease-out " +
                     (isActive
-                      ? "z-10 scale-100 opacity-100 drop-shadow-[0_0_50px_rgba(136,192,71,0.25)]"
+                      ? "z-10 scale-100 opacity-100"
                       : "scale-[0.85] opacity-40")
                   }
                   style={{ height: "var(--ch)", aspectRatio: "9 / 16" }}
@@ -184,7 +184,7 @@ export default function ReelTheater() {
                   <button
                     type="button"
                     onClick={() => onCardClick(i)}
-                    className="chamfer group relative block h-full w-full overflow-hidden bg-ink-3 text-left"
+                    className={"chamfer group relative block h-full w-full overflow-hidden bg-ink-3 text-left " + (isActive ? "shadow-[0_0_60px_rgba(136,192,71,0.22)]" : "")}
                     aria-label={
                       isActive
                         ? soundOn

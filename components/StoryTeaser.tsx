@@ -24,7 +24,7 @@ export default function StoryTeaser() {
       ref={ref}
       className="relative overflow-hidden border-y border-line bg-ink-2 py-24 md:py-32"
     >
-      <PalmShadow className="left-[-6%] top-[-8%] h-[34rem] w-[30rem] opacity-[0.22]" tone="green" />
+      <PalmShadow className="left-[-7%] bottom-[-2rem] h-[36rem] w-[26rem] opacity-[0.22]" tone="green" />
 
       {/* the year, drifting behind the copy column */}
       <motion.p

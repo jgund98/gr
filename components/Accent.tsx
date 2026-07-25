@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { useRef } from "react";
+import { motion, useInView, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
@@ -49,8 +50,13 @@ export function Scribble({
   stroke?: string;
 }) {
   const reduced = useReducedMotion();
+  const ref = useRef<HTMLSpanElement>(null);
+  // observe the span itself once it's actually visible (it may start
+  // inside a clipped line-mask) — never trust whileInView on the path
+  const inView = useInView(ref, { once: true, amount: 0.6 });
+  const on = reduced || inView;
   return (
-    <span className={cn("relative inline-block whitespace-nowrap", className)}>
+    <span ref={ref} className={cn("relative inline-block whitespace-nowrap", className)}>
       {children}
       <svg
         className="absolute -bottom-[0.18em] left-0 w-full"
@@ -64,10 +70,9 @@ export function Scribble({
           stroke={stroke}
           strokeWidth={7}
           strokeLinecap="round"
-          initial={reduced ? false : { pathLength: 0 }}
-          whileInView={{ pathLength: 1 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, delay: 0.35, ease: "easeOut" }}
+          initial={false}
+          animate={on ? { pathLength: 1, opacity: 1 } : { pathLength: 0.001, opacity: 0 }}
+          transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
         />
       </svg>
     </span>
