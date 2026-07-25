@@ -16,6 +16,17 @@ export default function Preloader() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // a refresh on home always starts fresh at the top — the hero
+    // choreography (and the preloader) assume scroll position zero
+    if (pathname === "/") {
+      window.history.scrollRestoration = "manual";
+      window.scrollTo(0, 0);
+    } else {
+      window.history.scrollRestoration = "auto";
+    }
+  }, [pathname]);
+
+  useEffect(() => {
     // the mark draws itself in on every HOME load — interior pages stay instant
     if (reduced || pathname !== "/") return;
     setShow(true);
