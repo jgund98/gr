@@ -3,7 +3,6 @@ import Image from "next/image";
 import { FullLogo } from "@/components/GRMark";
 import { nav, site } from "@/lib/site";
 import Phone from "@/components/Phone";
-import FooterMark from "@/components/FooterMark";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -87,7 +86,22 @@ export default function Footer() {
         </div>
       </div>
 
-      <FooterMark />
+      {/* the sign-off: the name, edge to edge on every screen */}
+      <div className="relative overflow-hidden pb-2" aria-hidden>
+        <svg viewBox="0 0 1200 116" className="block w-full">
+          <text
+            x="600"
+            y="108"
+            textAnchor="middle"
+            textLength="1176"
+            lengthAdjust="spacingAndGlyphs"
+            className="display"
+            style={{ fontSize: 138, fill: "rgba(136,192,71,0.92)" }}
+          >
+            GUSRENNY.COM
+          </text>
+        </svg>
+      </div>
     </footer>
   );
 }
