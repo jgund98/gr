@@ -28,15 +28,15 @@ const sans = Instrument_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(site.domain),
   title: {
-    default: "Gus Renny — Builder. Investor. Operator.",
-    template: "%s — Gus Renny",
+    default: "GUSRENNY.COM — Builder. Investor. Operator.",
+    template: "%s — GUSRENNY.COM",
   },
   description: site.description,
   openGraph: {
-    title: "Gus Renny — Builder. Investor. Operator.",
+    title: "GUSRENNY.COM — Builder. Investor. Operator.",
     description: site.description,
     url: site.domain,
-    siteName: "Gus Renny",
+    siteName: "GUSRENNY.COM",
     images: [{ url: "/og.jpg", width: 1200, height: 630 }],
     locale: "en_US",
     type: "website",
