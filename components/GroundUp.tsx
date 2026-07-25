@@ -38,7 +38,7 @@ const SCENES: Scene[] = [
   {
     word: "Bones.",
     note: "A century-old frame, stripped honest",
-    src: "/site/bones.webp",
+    src: "/site/bones2.webp",
   },
   {
     word: "Plans.",
