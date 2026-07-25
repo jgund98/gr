@@ -142,7 +142,7 @@ export default function MaskHero() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
         />
         <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-ink/95 via-ink/40 to-transparent" />
 

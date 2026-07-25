@@ -10,6 +10,11 @@ export default function SmoothScroll() {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Low-memory devices scroll smoother natively than through a rAF loop —
+    // skip Lenis there. (deviceMemory is Chrome-only; everything without it,
+    // including iPhones, keeps the smooth scroll.)
+    const mem = (navigator as { deviceMemory?: number }).deviceMemory;
+    if (mem !== undefined && mem <= 4) return;
     const lenis = new Lenis({ lerp: 0.11, wheelMultiplier: 0.95 });
     lenisRef.current = lenis;
     let raf = 0;
