@@ -25,12 +25,22 @@ export default function SmoothScroll() {
     };
   }, []);
 
-  // Lenis keeps its own scroll state across route changes and can drag a
-  // fresh page back to the old offset — reset it hard on every navigation
-  // (anchor links keep their target).
+  // Lenis keeps its own scroll state across route changes and drags fresh
+  // pages back to the old offset. On every navigation, force-sync it:
+  // to the anchor target if the URL has one, otherwise to the top.
   useEffect(() => {
-    if (window.location.hash) return;
-    lenisRef.current?.scrollTo(0, { immediate: true, force: true });
+    const lenis = lenisRef.current;
+    const hash = window.location.hash.slice(1);
+    const target = hash ? document.getElementById(hash) : null;
+    if (target) {
+      if (lenis) {
+        lenis.scrollTo(target, { immediate: true, force: true, offset: -120 });
+      } else {
+        target.scrollIntoView();
+      }
+      return;
+    }
+    lenis?.scrollTo(0, { immediate: true, force: true });
     window.scrollTo(0, 0);
   }, [pathname]);
 
