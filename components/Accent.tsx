@@ -71,8 +71,10 @@ export function Scribble({
           strokeWidth={5}
           vectorEffect="non-scaling-stroke"
           strokeLinecap="round"
+          pathLength={100}
+          strokeDasharray="100"
           initial={false}
-          animate={on ? { pathLength: 1, opacity: 1 } : { pathLength: 0.001, opacity: 0 }}
+          animate={on ? { strokeDashoffset: 0, opacity: 1 } : { strokeDashoffset: 100, opacity: 0 }}
           transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
         />
       </svg>
