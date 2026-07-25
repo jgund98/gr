@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import { site } from "@/lib/site";
+import Phone from "@/components/Phone";
 
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Reach Gus Renny — West Palm Beach and Coral Springs offices. (305) 778-7114 · gusrenny@me.com",
+    "Reach Gus Renny — West Palm Beach and Coral Springs offices. One call does it.",
 };
 
 export default function ContactPage() {
@@ -21,12 +22,7 @@ export default function ContactPage() {
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <Reveal>
             <div className="flex flex-col gap-3">
-              <a
-                href={site.phoneHref}
-                className="w-fit display text-4xl text-green transition-colors hover:text-green-bright md:text-6xl"
-              >
-                {site.phone}
-              </a>
+              <Phone className="w-fit display text-4xl text-green transition-colors hover:text-green-bright md:text-6xl" />
               <a
                 href={`mailto:${site.email}`}
                 className="w-fit display text-2xl text-paper/85 transition-colors hover:text-green md:text-4xl"

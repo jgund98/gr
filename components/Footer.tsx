@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { FullLogo } from "@/components/GRMark";
 import { nav, site } from "@/lib/site";
+import Phone from "@/components/Phone";
+import FooterMark from "@/components/FooterMark";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -43,9 +45,7 @@ export default function Footer() {
 
           <div className="md:col-span-4 md:border-l md:border-line md:pl-10">
             <p className="label mb-5 text-faint">Reach Gus</p>
-            <a href={site.phoneHref} className="block display text-2xl text-green hover:text-green-bright">
-              {site.phone}
-            </a>
+            <Phone className="block w-fit display text-2xl text-green hover:text-green-bright" />
             <a href={`mailto:${site.email}`} className="mt-1 block text-mist hover:text-paper">
               {site.email}
             </a>
@@ -87,22 +87,7 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* the sign-off: the name, edge to edge on every screen */}
-      <div className="relative overflow-hidden pb-2" aria-hidden>
-        <svg viewBox="0 0 1200 116" className="block w-full">
-          <text
-            x="600"
-            y="108"
-            textAnchor="middle"
-            textLength="1176"
-            lengthAdjust="spacingAndGlyphs"
-            className="display"
-            style={{ fontSize: 138, fill: "rgba(136,192,71,0.92)" }}
-          >
-            GUSRENNY.COM
-          </text>
-        </svg>
-      </div>
+      <FooterMark />
     </footer>
   );
 }

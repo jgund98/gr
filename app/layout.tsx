@@ -53,8 +53,6 @@ const personJsonLd = {
   name: "Gus Renny",
   url: site.domain,
   jobTitle: "Founder, GR Investment Group",
-  telephone: "+1-305-778-7114",
-  email: site.email,
   address: {
     "@type": "PostalAddress",
     streetAddress: "1300 Old Congress Ave",

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { FullLogo, Glyph } from "@/components/GRMark";
 import { site } from "@/lib/site";
+import Phone from "@/components/Phone";
 import { cn } from "@/lib/cn";
 
 const links = [
@@ -148,9 +149,7 @@ export default function Header() {
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
               transition={{ delay: 0.5, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
-              <a href={site.phoneHref} className="block display text-2xl text-green">
-                {site.phone}
-              </a>
+              <Phone className="block w-fit display text-2xl text-green" />
               <a href={`mailto:${site.email}`} className="mt-1 block text-mist">
                 {site.email}
               </a>

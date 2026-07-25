@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { site } from "@/lib/site";
 
@@ -13,6 +13,15 @@ export default function CareersForm() {
   const sent = params.get("sent") === "1";
   const [fileName, setFileName] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  // anti-bot: endpoint assembled client-side, and forms submitted faster
+  // than a human could fill them are rejected
+  const [action, setAction] = useState("");
+  const armedAt = useRef(0);
+  useEffect(() => {
+    const user = [103,117,115,114,101,110,110,121].map((c)=>String.fromCharCode(c)).join("");
+    setAction("https://formsubmit.co/" + user + "@me.com");
+    armedAt.current = Date.now();
+  }, []);
 
   if (sent) {
     return (
@@ -29,15 +38,23 @@ export default function CareersForm() {
 
   return (
     <form
-      action="https://formsubmit.co/gusrenny@me.com"
+      action={action}
       method="POST"
       encType="multipart/form-data"
-      onSubmit={() => setSubmitting(true)}
+      onSubmit={(e) => {
+        if (!action || Date.now() - armedAt.current < 3000) {
+          e.preventDefault();
+          return;
+        }
+        setSubmitting(true);
+      }}
       className="chamfer border border-line bg-ink-2 p-7 md:p-10"
     >
       <input type="hidden" name="_subject" value="Resume — GUSRENNY.COM careers" />
       <input type="hidden" name="_template" value="table" />
-      <input type="hidden" name="_captcha" value="false" />
+      <input type="hidden" name="_captcha" value="true" />
+      {/* honeypot — humans never see it, bots can't resist it */}
+      <input type="text" name="_honey" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
       <input type="hidden" name="_next" value={`${site.domain}/careers?sent=1`} />
 
       <p className="tag-index">Introduce yourself</p>

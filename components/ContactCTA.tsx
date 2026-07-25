@@ -4,6 +4,7 @@ import Reveal from "@/components/Reveal";
 import RevealLines from "@/components/RevealLines";
 import PalmShadow from "@/components/PalmShadow";
 import { Scribble } from "@/components/Accent";
+import Phone from "@/components/Phone";
 
 /** The close — full brand green, nothing shy about it. */
 export default function ContactCTA() {
@@ -21,12 +22,7 @@ export default function ContactCTA() {
         />
         <Reveal delay={0.12}>
           <div className="mt-14 flex flex-col items-center gap-5">
-            <a
-              href={site.phoneHref}
-              className="chamfer bg-ink px-12 py-6 display text-3xl text-green transition-colors hover:bg-ink-2 hover:text-green-bright md:text-4xl"
-            >
-              {site.phone}
-            </a>
+            <Phone className="chamfer bg-ink px-12 py-6 display text-3xl text-green transition-colors hover:bg-ink-2 hover:text-green-bright md:text-4xl" />
             <a
               href={`mailto:${site.email}`}
               className="border-b border-ink/40 pb-1 font-medium text-ink/80 transition-colors hover:border-ink hover:text-ink"

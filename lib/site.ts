@@ -10,8 +10,6 @@ export const site = {
   tagline: "Builder. Investor. Operator.",
   description:
     "Gus Renny — Palm Beach entrepreneur. Three decades across real estate development, brokerage, insurance, and health. Founder of GR Investment Group.",
-  phone: "(305) 778-7114",
-  phoneHref: "tel:+13057787114",
   email: "gusrenny@me.com",
   founded: 1997,
   license: "FL Broker BK3322472",
