@@ -42,11 +42,13 @@ export default function RevealLines({
         viewport={{ once: true, margin: "-40px" }}
       >
         {lines.map((line, i) => (
-          <span key={i} className="block overflow-hidden pb-[0.09em] -mb-[0.09em]">
+          {/* bottom slack fits descenders AND the scribble underline;
+              hidden offset exceeds mask height so nothing peeks early */}
+          <span key={i} className="block overflow-hidden pb-[0.28em] -mb-[0.28em]">
             <motion.span
               className="block will-change-transform"
               variants={{
-                hidden: { y: "115%" },
+                hidden: { y: "140%" },
                 show: {
                   y: 0,
                   transition: {
