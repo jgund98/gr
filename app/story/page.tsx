@@ -175,9 +175,9 @@ export default function StoryPage() {
                 "My best&nbsp;build."
               </h2>
               <p className="lede mt-6 max-w-xl text-mist">
-                Married, with kids — and if you ask Gus what he's proudest of,
-                it isn't on any deed. That's his answer, word for word:
-                family life is his best&nbsp;build.
+                Ask Gus what he's proudest of and it isn't on any deed — it's
+                his daughter. His answer, word for word: family life is his
+                best&nbsp;build.
               </p>
             </Reveal>
           </div>
