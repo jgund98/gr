@@ -1,52 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
 
 /**
- * The brand band — his company logos only, optically matched,
- * one quiet divider. Two identical rows, each wider than any
- * monitor, so the -50% loop is seamless everywhere.
+ * The brand band — his company logos rolling on full-vibrance green.
+ * The whole row is ONE pre-baked strip image: a single decode and a
+ * single texture, so mobile browsers can't evict individual logos
+ * mid-scroll (the cause of the old random pop-in/pop-out).
  */
-const LOGOS: { slug: string; name: string; h: number }[] = [
-  { slug: "gdr-development", name: "GDR Development", h: 44 },
-  { slug: "renny-realty", name: "Renny Realty", h: 48 },
-  { slug: "renny-insurance", name: "Renny Insurance Group", h: 30 },
-  { slug: "millennium", name: "Millennium Health Advisors", h: 46 },
-  { slug: "sycamore", name: "Sycamore Behavioral Health", h: 44 },
-  { slug: "helping-hand", name: "Helping Hand Home Warranty", h: 46 },
-  { slug: "decorate-one", name: "Decorate One", h: 26 },
-];
-
 export default function Marquee() {
-  // One set on mobile (row still wider than any phone), two sets on lg+
-  // (ultrawide coverage). Keeping the mobile layer under the GPU texture
-  // limit stops logos from tiling in and out mid-scroll.
-  const items = [...LOGOS, ...LOGOS];
-  const row = (ariaHidden: boolean) => (
-    <div className="flex shrink-0 items-center" aria-hidden={ariaHidden || undefined}>
-      {items.map((l, i) => (
-        <span
-          key={i}
-          className={
-            "flex items-center " + (i >= LOGOS.length ? "hidden lg:flex" : "")
-          }
-        >
-          <img
-            src={`/companies/ink-${l.slug}.png`}
-            alt={ariaHidden ? "" : l.name}
-            style={{ height: l.h }}
-            className="mx-8 w-auto object-contain opacity-90 md:mx-16"
-            loading="eager"
-            decoding="sync"
-          />
-          <span className="h-7 w-px rotate-[24deg] bg-ink/30" aria-hidden />
-        </span>
-      ))}
-    </div>
+  const strip = (hidden: boolean) => (
+    <img
+      src="/brand/logo-strip.png"
+      alt={hidden ? "" : "GDR Development, Renny Realty, Renny Insurance Group, Millennium Health Advisors, Sycamore Behavioral Health, Helping Hand Home Warranty, Decorate One"}
+      aria-hidden={hidden || undefined}
+      className="h-12 w-auto max-w-none shrink-0 md:h-14"
+      loading="eager"
+      decoding="sync"
+    />
   );
   return (
-    <div className="relative overflow-hidden bg-green py-6 md:py-7">
-      <div className="animate-marquee flex w-max will-change-transform [animation-duration:60s]">
-        {row(false)}
-        {row(true)}
+    <div className="relative overflow-hidden bg-green py-5 md:py-6">
+      <div className="animate-marquee flex w-max [animation-duration:22s] md:[animation-duration:40s]">
+        {strip(false)}
+        {strip(true)}
       </div>
     </div>
   );

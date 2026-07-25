@@ -206,8 +206,8 @@ export default function ReelTheater() {
                       preload="none"
                     />
                     {isActive && (
-                      <span className="label absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap bg-ink/80 px-3.5 py-2 text-paper backdrop-blur-sm">
-                        {soundOn ? "◉ Sound on — tap to mute" : "◎ Tap for sound"}
+                      <span className="label absolute bottom-4 left-1/2 max-w-[88%] -translate-x-1/2 whitespace-nowrap bg-ink/80 px-3 py-2 text-paper backdrop-blur-sm">
+                        {soundOn ? "◉ Sound on" : "◎ Tap for sound"}
                       </span>
                     )}
                   </button>
