@@ -14,12 +14,7 @@ export default function Preloader() {
   const reduced = useReducedMotion();
 
   useEffect(() => {
-    try {
-      if (sessionStorage.getItem("gr-intro")) return;
-      sessionStorage.setItem("gr-intro", "1");
-    } catch {
-      /* private mode — just play it */
-    }
+    // plays on every full page load — the mark always draws itself in
     if (reduced) return;
     setShow(true);
     document.documentElement.style.overflow = "hidden";
