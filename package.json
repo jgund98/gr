@@ -1,0 +1,31 @@
+{
+  "name": "gus-renny",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3970",
+    "build": "next build",
+    "start": "next start -p 3970",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lenis": "^1.3.25",
+    "motion": "^12.42.2",
+    "next": "16.2.10",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@imgly/background-removal-node": "^1.4.5",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "potrace": "^2.1.8",
+    "puppeteer": "^25.3.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

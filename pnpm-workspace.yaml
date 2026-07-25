@@ -1,0 +1,6 @@
+allowBuilds:
+  onnxruntime-node: true
+  puppeteer: true
+  sharp: true
+onlyBuiltDependencies:
+  - sharp

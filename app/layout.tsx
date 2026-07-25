@@ -1,0 +1,85 @@
+import type { Metadata } from "next";
+import { Archivo, Instrument_Serif, Instrument_Sans } from "next/font/google";
+import "./globals.css";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Preloader from "@/components/Preloader";
+import SmoothScroll from "@/components/SmoothScroll";
+import { site } from "@/lib/site";
+
+const serif = Instrument_Serif({
+  weight: "400",
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  variable: "--font-instrument-serif",
+});
+
+const display = Archivo({
+  subsets: ["latin"],
+  variable: "--font-archivo",
+  axes: ["wdth"],
+});
+
+const sans = Instrument_Sans({
+  subsets: ["latin"],
+  variable: "--font-instrument-sans",
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL(site.domain),
+  title: {
+    default: "Gus Renny — Builder. Investor. Operator.",
+    template: "%s — Gus Renny",
+  },
+  description: site.description,
+  openGraph: {
+    title: "Gus Renny — Builder. Investor. Operator.",
+    description: site.description,
+    url: site.domain,
+    siteName: "Gus Renny",
+    images: [{ url: "/og.jpg", width: 1200, height: 630 }],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og.jpg"],
+  },
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Gus Renny",
+  url: site.domain,
+  jobTitle: "Founder, GR Investment Group",
+  telephone: "+1-305-778-7114",
+  email: site.email,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "1300 Old Congress Ave",
+    addressLocality: "West Palm Beach",
+    addressRegion: "FL",
+    postalCode: "33409",
+    addressCountry: "US",
+  },
+  sameAs: [site.social.linkedin, "https://gdrdevelopment.com", "https://rennyrealty.com"],
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" className={`${serif.variable} ${sans.variable} ${display.variable}`}>
+      <body className="bg-ink text-paper">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <SmoothScroll />
+        <Preloader />
+        <Header />
+        <main>{children}</main>
+        <Footer />
+      </body>
+    </html>
+  );
+}

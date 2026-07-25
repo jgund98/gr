@@ -1,0 +1,222 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0b0e09;
+  --color-ink-2: #10140b;
+  --color-ink-3: #161c0f;
+  --color-paper: #f2f4ec;
+  --color-mist: rgba(242, 244, 236, 0.68);
+  --color-faint: rgba(242, 244, 236, 0.45);
+  --color-green: #88c047;
+  --color-green-bright: #a3db5e;
+  --color-green-deep: #223910;
+  --color-line: rgba(163, 219, 94, 0.14);
+
+  --font-serif: var(--font-instrument-serif);
+  --font-sans: var(--font-instrument-sans);
+}
+
+/* ── display type: heavy, wide, modern — built like the mark ── */
+.display {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-weight: 830;
+  font-stretch: 112%;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
+
+/* serif italic survives only as an accent voice inside display type */
+.display em,
+.lede em {
+  font-family: var(--font-instrument-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-stretch: 100%;
+  letter-spacing: 0;
+  /* italic glyphs overhang their box — keep them off the next word */
+  padding-right: 0.14em;
+  padding-left: 0.03em;
+}
+
+.lede {
+  font-size: 1.25rem;
+  line-height: 1.65;
+}
+@media (min-width: 768px) {
+  .lede {
+    font-size: 1.375rem;
+  }
+}
+
+/* palm-shadow sway */
+@keyframes sway {
+  0%, 100% {
+    transform: rotate(-2.4deg);
+  }
+  50% {
+    transform: rotate(2.8deg);
+  }
+}
+.animate-sway {
+  animation: sway 9s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-sway {
+    animation: none;
+  }
+}
+
+html {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-green);
+  color: var(--color-ink);
+}
+
+/* ── labels: expanded uppercase micro-type ─────────────────── */
+.label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+@media (min-width: 768px) {
+  .label {
+    font-size: 0.75rem;
+  }
+}
+
+/* ── chamfered corners (echoes the 45° cuts in the GR mark) ── */
+.chamfer {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+.chamfer-sm {
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.chamfer-tr {
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+}
+
+/* ── film grain ──────────────────────────────────────────────── */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+/* ── marquee ─────────────────────────────────────────────────── */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 36s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
+
+/* ── slow dash flow along constellation lines ────────────────── */
+@keyframes dashflow {
+  to {
+    stroke-dashoffset: -240;
+  }
+}
+.dash-flow {
+  animation: dashflow 14s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dash-flow {
+    animation: none;
+  }
+}
+
+/* ── ambient green glows: the antidote to dead black voids ──── */
+.glow-tl::before,
+.glow-br::after {
+  content: "";
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  max-width: 900px;
+  max-height: 900px;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(136, 192, 71, 0.13), transparent 65%);
+}
+.glow-tl::before {
+  top: -20vw;
+  left: -18vw;
+}
+.glow-br::after {
+  bottom: -22vw;
+  right: -16vw;
+}
+
+/* section index annotation, Movetic-style */
+.tag-index {
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-green);
+}
+.tag-index::before {
+  content: "// ";
+  color: rgba(163, 219, 94, 0.55);
+}
+
+/* outlined ghost type */
+.text-stroke-green {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(163, 219, 94, 0.55);
+}
+.text-outline-green {
+  color: transparent;
+  -webkit-text-stroke: 2.5px #88c047;
+}
+.text-outline-faint {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(163, 219, 94, 0.28);
+}
+
+/* underline sweep for nav links */
+.navline {
+  position: relative;
+}
+.navline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 1px;
+  width: 100%;
+  background: var(--color-green);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.navline:hover::after,
+.navline[data-active="true"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}

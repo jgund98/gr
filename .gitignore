@@ -1,0 +1,15 @@
+# deps / build
+node_modules/
+.next/
+out/
+tsconfig.tsbuildinfo
+
+# local working material — not part of the site
+raw-assets/
+dev-server.log
+*.log
+
+# env & tooling
+.env*
+.vercel
+.claude/
