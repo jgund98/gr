@@ -130,7 +130,7 @@ export default function ReelTheater() {
 
   return (
     <section ref={sectionRef} className="relative h-[430svh]">
-      <div className="sticky top-0 flex h-[100svh] flex-col overflow-hidden border-y border-line bg-ink-2 [--ch:min(68svh,calc(100svh-248px))] md:[--ch:56svh]">
+      <div className="sticky top-0 flex h-[100svh] flex-col overflow-hidden border-y border-line bg-ink-2 [--ch:min(68svh,calc(100svh-262px))] md:[--ch:56svh]">
         {/* ambient backdrop — the room takes the clip's color */}
         <AnimatePresence>
           <motion.img
@@ -148,7 +148,7 @@ export default function ReelTheater() {
         <div className="absolute inset-0 bg-ink/55" aria-hidden />
         <div className="absolute inset-0 bg-gradient-to-b from-ink-2 via-transparent to-ink-2/90" aria-hidden />
 
-        <div className="relative mx-auto w-full max-w-7xl px-5 pb-2 pt-20 md:px-8 md:pb-4 md:pt-28">
+        <div className="relative mx-auto w-full max-w-7xl px-5 pb-2 pt-24 md:px-8 md:pb-4 md:pt-28">
           <Reveal className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="tag-index">05 — The feed</p>
