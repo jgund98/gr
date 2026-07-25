@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import CareersForm from "@/components/CareersForm";
+import PalmShadow from "@/components/PalmShadow";
+import Btn from "@/components/Btn";
+import { TileMark } from "@/components/GRMark";
 import { categories } from "@/lib/companies";
 
 export const metadata: Metadata = {
@@ -17,7 +19,34 @@ const blurbs: Record<string, string> = {
   "Home & Lifestyle": "Service, production, the details people notice.",
 };
 
-export default function CareersPage() {
+export default async function CareersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sent?: string }>;
+}) {
+  const { sent } = await searchParams;
+
+  if (sent === "1") {
+    // full-screen thank-you — always in view, no scrolling required
+    return (
+      <section className="glow-tl relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-6 py-28 text-center">
+        <PalmShadow className="left-[-9rem] top-[6%] h-[22rem] w-[36rem] opacity-[0.18]" tone="green" />
+        <TileMark className="h-20 w-auto md:h-24" alt="GR mark" />
+        <h1 className="mt-8 display text-[2.6rem] leading-[1.02] sm:text-6xl md:text-7xl">
+          In the pile —<br />
+          <span className="text-green">the good one.</span>
+        </h1>
+        <p className="lede mx-auto mt-6 max-w-md text-mist">
+          Your resume is on its way to the team. If there's a fit anywhere
+          in the portfolio, you'll hear from a&nbsp;human.
+        </p>
+        <div className="mt-10">
+          <Btn href="/">Back to the site</Btn>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <>
       <PageHero label="Careers" lines={["Good people", <>get&nbsp;found.</>]}>
@@ -51,9 +80,7 @@ export default function CareersPage() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <Suspense fallback={null}>
-              <CareersForm />
-            </Suspense>
+            <CareersForm />
           </Reveal>
         </div>
       </section>

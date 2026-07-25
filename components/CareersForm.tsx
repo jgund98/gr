@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { site } from "@/lib/site";
 
 /**
@@ -9,8 +8,6 @@ import { site } from "@/lib/site";
  * attached). No backend to maintain; redirects back with ?sent=1.
  */
 export default function CareersForm() {
-  const params = useSearchParams();
-  const sent = params.get("sent") === "1";
   const [fileName, setFileName] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   // anti-bot: endpoint assembled client-side, and forms submitted faster
@@ -22,19 +19,6 @@ export default function CareersForm() {
     setAction("https://formsubmit.co/" + user + "@me.com");
     armedAt.current = Date.now();
   }, []);
-
-  if (sent) {
-    return (
-      <div className="chamfer border border-green/50 bg-ink-2 p-8 text-center md:p-12">
-        <p className="tag-index">Received</p>
-        <h3 className="mt-3 display text-3xl md:text-4xl">In the pile — the good one.</h3>
-        <p className="lede mx-auto mt-4 max-w-md text-mist">
-          Your resume is on its way to the team. If there's a fit anywhere in
-          the portfolio, you'll hear from a human.
-        </p>
-      </div>
-    );
-  }
 
   return (
     <form
