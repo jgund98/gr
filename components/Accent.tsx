@@ -59,7 +59,7 @@ export function Scribble({
     <span ref={ref} className={cn("relative inline-block whitespace-nowrap", className)}>
       {children}
       <svg
-        className="absolute -bottom-[0.18em] left-0 w-full"
+        className="absolute -bottom-[0.13em] left-0 h-[0.11em] w-full"
         viewBox="0 0 300 24"
         preserveAspectRatio="none"
         aria-hidden
@@ -68,7 +68,8 @@ export function Scribble({
           d="M4 14 C 60 20, 130 6, 296 12"
           fill="none"
           stroke={stroke}
-          strokeWidth={7}
+          strokeWidth={5}
+          vectorEffect="non-scaling-stroke"
           strokeLinecap="round"
           initial={false}
           animate={on ? { pathLength: 1, opacity: 1 } : { pathLength: 0.001, opacity: 0 }}
