@@ -68,6 +68,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable} ${display.variable}`}>
       <body className="bg-ink text-paper">
+        {/* Runs before hydration AND before the browser's async scroll
+            restore: home must always open at the top or the hero timeline
+            hydrates mid-flight (full video, no aperture). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(location.pathname==='/'){history.scrollRestoration='manual';scrollTo(0,0);addEventListener('pageshow',function(e){if(e.persisted)scrollTo(0,0)});}}catch(e){}",
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}

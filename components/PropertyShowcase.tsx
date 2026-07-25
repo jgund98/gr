@@ -49,8 +49,13 @@ export default function PropertyShowcase({ items }: { items: ShowcaseItem[] }) {
             <Reveal>
               <p className="tag-index">03 — The work</p>
             </Reveal>
+            {/* authored per breakpoint so no line ever rewraps */}
             <RevealLines
-              className="mt-4 max-w-4xl text-4xl leading-[1.03] md:text-6xl"
+              className="mt-4 text-4xl leading-[1.05] sm:hidden"
+              lines={["Homes that read", "historic, and", <>live brand&nbsp;new.</>]}
+            />
+            <RevealLines
+              className="mt-4 hidden max-w-4xl text-4xl leading-[1.03] sm:block md:text-6xl"
               lines={["Homes that read historic,", <>and live brand&nbsp;new.</>]}
             />
           </div>
