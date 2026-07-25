@@ -72,7 +72,7 @@ export function FullLogo({ className, alt = "GUSRENNY.COM" }: { className?: stri
       alt={alt}
       width={500}
       height={408}
-      className={cn("block h-auto", className)}
+      className={cn("block", className)}
     />
   );
 }
