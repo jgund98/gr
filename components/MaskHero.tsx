@@ -201,7 +201,7 @@ export default function MaskHero() {
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
               <p className="label inline-block bg-green px-3 py-1.5 !text-ink">
-                Filmed above one of his own rebuilds
+                Filmed above one of Gus' rebuilds
               </p>
               <p className="display text-4xl md:text-6xl [text-shadow:0_2px_30px_rgba(11,14,9,0.6)]">
                 <span className="block">Thirty&nbsp;years.</span>
