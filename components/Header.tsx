@@ -50,11 +50,11 @@ export default function Header() {
     >
       {/* legibility scrim while the header floats over the hero */}
       {!scrolled && !open && (
-        <div className="pointer-events-none absolute inset-x-0 -top-0 h-28 bg-gradient-to-b from-ink/80 to-transparent" aria-hidden />
+        <div className="pointer-events-none absolute inset-x-0 -top-0 hidden h-28 bg-gradient-to-b from-ink/80 to-transparent lg:block" aria-hidden />
       )}
 
       <div className="relative mx-auto flex h-[88px] max-w-7xl items-center justify-between px-5 md:h-24 md:px-8">
-        <Link href="/" aria-label="Gus Renny — home" className="relative z-[70]">
+        <Link href="/" aria-label="Gus Renny — home" className="relative z-[70] drop-shadow-[0_2px_14px_rgba(0,0,0,0.65)]">
           <FullLogo className="h-16 w-auto md:h-[72px]" alt="GUSRENNY.COM" />
         </Link>
 
@@ -83,7 +83,7 @@ export default function Header() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label={open ? "Close menu" : "Open menu"}
-          className="relative z-[70] flex h-11 w-11 items-center justify-center lg:hidden"
+          className="relative z-[70] flex h-11 w-11 items-center justify-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] lg:hidden"
         >
           <span className="relative block h-3.5 w-7">
             <span
