@@ -16,18 +16,26 @@ const LOGOS: { slug: string; name: string; h: number }[] = [
 ];
 
 export default function Marquee() {
-  // repeat the set so one row always exceeds ultrawide viewports
+  // One set on mobile (row still wider than any phone), two sets on lg+
+  // (ultrawide coverage). Keeping the mobile layer under the GPU texture
+  // limit stops logos from tiling in and out mid-scroll.
   const items = [...LOGOS, ...LOGOS];
   const row = (ariaHidden: boolean) => (
     <div className="flex shrink-0 items-center" aria-hidden={ariaHidden || undefined}>
       {items.map((l, i) => (
-        <span key={i} className="flex items-center">
+        <span
+          key={i}
+          className={
+            "flex items-center " + (i >= LOGOS.length ? "hidden lg:flex" : "")
+          }
+        >
           <img
             src={`/companies/ink-${l.slug}.png`}
             alt={ariaHidden ? "" : l.name}
             style={{ height: l.h }}
-            className="mx-12 w-auto object-contain opacity-90 md:mx-16"
-            loading="lazy"
+            className="mx-8 w-auto object-contain opacity-90 md:mx-16"
+            loading="eager"
+            decoding="sync"
           />
           <span className="h-7 w-px rotate-[24deg] bg-ink/30" aria-hidden />
         </span>
