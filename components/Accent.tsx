@@ -58,26 +58,24 @@ export function Scribble({
   return (
     <span ref={ref} className={cn("relative inline-block whitespace-nowrap", className)}>
       {children}
-      <svg
-        className="absolute -bottom-[0.13em] left-0 h-[0.11em] w-full"
+      <motion.svg
+        className="absolute -bottom-[0.13em] left-0 h-[0.11em] w-full origin-left"
         viewBox="0 0 300 24"
         preserveAspectRatio="none"
         aria-hidden
+        initial={false}
+        animate={on ? { scaleX: 1, opacity: 1 } : { scaleX: 0, opacity: 0 }}
+        transition={{ duration: 0.65, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
       >
-        <motion.path
+        <path
           d="M4 14 C 60 20, 130 6, 296 12"
           fill="none"
           stroke={stroke}
           strokeWidth={5}
           vectorEffect="non-scaling-stroke"
           strokeLinecap="round"
-          pathLength={100}
-          strokeDasharray="100"
-          initial={false}
-          animate={on ? { strokeDashoffset: 0, opacity: 1 } : { strokeDashoffset: 100, opacity: 0 }}
-          transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
         />
-      </svg>
+      </motion.svg>
     </span>
   );
 }
