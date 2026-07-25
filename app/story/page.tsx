@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import PageHero from "@/components/PageHero";
-import GroundUp from "@/components/GroundUp";
 import Reveal from "@/components/Reveal";
 import ContactCTA from "@/components/ContactCTA";
 import { TileMark, Glyph } from "@/components/GRMark";
@@ -78,7 +77,6 @@ export default function StoryPage() {
         one&nbsp;name.
       </PageHero>
 
-      <GroundUp />
 
       <section className="pb-24 md:pb-32">
         <div className="mx-auto flex max-w-7xl flex-col gap-24 px-5 md:gap-36 md:px-8">

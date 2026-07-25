@@ -69,30 +69,80 @@ export default function MaskHero() {
     return { cw, ch, k, gx, gy, ox, oy, endScale };
   }, [vp]);
 
-  // paint the overlay texture (once per geometry change)
+  // paint the overlay texture — self-healing: after painting we verify
+  // the pixels (corner opaque, aperture transparent) and repaint until
+  // correct, and repaint again whenever the browser may have purged the
+  // canvas backing store (tab restore, bfcache). Whatever the failure
+  // mode, the mask converges to the correct state.
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !vp) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(geo.cw * dpr);
-    canvas.height = Math.round(geo.ch * dpr);
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, geo.cw, geo.ch);
-    ctx.fillStyle = "#0b0e09";
-    ctx.fillRect(0, 0, geo.cw, geo.ch);
-    const path = new Path2D();
-    GLYPH_POINTS.forEach(([px, py], i) => {
-      const x = geo.gx + px * geo.k;
-      const y = geo.gy + py * geo.k;
-      if (i === 0) path.moveTo(x, y);
-      else path.lineTo(x, y);
-    });
-    path.closePath();
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.fill(path);
-    ctx.globalCompositeOperation = "source-over";
+
+    const paint = (): boolean => {
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return false;
+      canvas.width = Math.round(geo.cw * dpr);
+      canvas.height = Math.round(geo.ch * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.globalCompositeOperation = "source-over";
+      ctx.clearRect(0, 0, geo.cw, geo.ch);
+      ctx.fillStyle = "#0b0e09";
+      ctx.fillRect(0, 0, geo.cw, geo.ch);
+      const path = new Path2D();
+      GLYPH_POINTS.forEach(([px, py], i) => {
+        const x = geo.gx + px * geo.k;
+        const y = geo.gy + py * geo.k;
+        if (i === 0) path.moveTo(x, y);
+        else path.lineTo(x, y);
+      });
+      path.closePath();
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fill(path);
+      ctx.globalCompositeOperation = "source-over";
+      return true;
+    };
+
+    const healthy = (): boolean => {
+      try {
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return false;
+        const corner = ctx.getImageData(2, 2, 1, 1).data[3];
+        const eye = ctx.getImageData(
+          Math.min(canvas.width - 1, Math.round(geo.ox * dpr)),
+          Math.min(canvas.height - 1, Math.round(geo.oy * dpr)),
+          1,
+          1
+        ).data[3];
+        return corner > 200 && eye < 40;
+      } catch {
+        return true; // can't read? assume fine rather than loop forever
+      }
+    };
+
+    let tries = 0;
+    let raf = 0;
+    const ensure = () => {
+      if (healthy() || tries >= 6) return;
+      tries++;
+      paint();
+      raf = requestAnimationFrame(ensure);
+    };
+    paint();
+    raf = requestAnimationFrame(ensure);
+
+    const onRestore = () => {
+      tries = 0;
+      paint();
+      raf = requestAnimationFrame(ensure);
+    };
+    document.addEventListener("visibilitychange", onRestore);
+    window.addEventListener("pageshow", onRestore);
+    return () => {
+      cancelAnimationFrame(raf);
+      document.removeEventListener("visibilitychange", onRestore);
+      window.removeEventListener("pageshow", onRestore);
+    };
   }, [geo, vp]);
 
   // pause the film while it's off screen
