@@ -20,7 +20,7 @@ export default function PageHero({
         className="pointer-events-none absolute -right-[14%] -top-[30%] h-[130%] w-auto text-green opacity-[0.05]"
         strokeWidth={4}
       />
-      <PalmShadow className="right-[1%] bottom-[-3rem] hidden h-[30rem] w-[24rem] opacity-[0.22] lg:block" tone="green" flip />
+      <PalmShadow className="right-[-8rem] top-[18%] hidden h-[20rem] w-[32rem] opacity-[0.22] lg:block" tone="green" flip />
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
           <p className="tag-index">{label}</p>

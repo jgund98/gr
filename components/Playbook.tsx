@@ -20,7 +20,7 @@ export default function Playbook() {
   const reduced = useReducedMotion();
   return (
     <section className="glow-tl relative overflow-hidden py-24 md:py-32">
-      <PalmShadow className="right-[-6%] bottom-[-2rem] h-[38rem] w-[28rem] opacity-25" tone="green" flip />
+      <PalmShadow className="right-[-9rem] top-[4rem] h-[24rem] w-[39rem] opacity-25" tone="green" flip />
 
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <Reveal className="flex items-center gap-5">

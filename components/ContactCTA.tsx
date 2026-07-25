@@ -10,7 +10,7 @@ export default function ContactCTA() {
   return (
     <section className="relative overflow-hidden bg-green py-28 text-ink md:py-40">
       <Glyph className="pointer-events-none absolute -right-[8%] top-1/2 h-[150%] w-auto -translate-y-1/2 text-ink opacity-[0.08]" />
-      <PalmShadow className="left-[-5%] bottom-[-2rem] h-[42rem] w-[30rem] opacity-30" tone="dark" />
+      <PalmShadow className="left-[-10rem] bottom-[6%] h-[24rem] w-[39rem] opacity-30" tone="dark" />
       <div className="relative mx-auto max-w-7xl px-5 text-center md:px-8">
         <Reveal>
           <p className="label text-ink/70">Direct line</p>
