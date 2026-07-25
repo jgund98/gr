@@ -130,7 +130,7 @@ export default function ReelTheater() {
 
   return (
     <section ref={sectionRef} className="relative h-[430svh]">
-      <div className="sticky top-0 flex h-[100svh] flex-col overflow-hidden border-y border-line bg-ink-2 [--ch:min(58svh,calc(100svh-330px))] md:[--ch:56svh]">
+      <div className="sticky top-0 flex h-[100svh] flex-col overflow-hidden border-y border-line bg-ink-2 [--ch:min(68svh,calc(100svh-248px))] md:[--ch:56svh]">
         {/* ambient backdrop — the room takes the clip's color */}
         <AnimatePresence>
           <motion.img
@@ -148,11 +148,11 @@ export default function ReelTheater() {
         <div className="absolute inset-0 bg-ink/55" aria-hidden />
         <div className="absolute inset-0 bg-gradient-to-b from-ink-2 via-transparent to-ink-2/90" aria-hidden />
 
-        <div className="relative mx-auto w-full max-w-7xl px-5 pb-4 pt-24 md:px-8 md:pt-28">
+        <div className="relative mx-auto w-full max-w-7xl px-5 pb-2 pt-20 md:px-8 md:pb-4 md:pt-28">
           <Reveal className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="tag-index">05 — The feed</p>
-              <h2 className="mt-3 display text-4xl md:text-6xl">Real footage. Real&nbsp;work.</h2>
+              <h2 className="mt-2 display text-3xl md:mt-3 md:text-6xl">Real footage. Real&nbsp;work.</h2>
             </div>
             <p className="label hidden text-faint sm:block">Scroll — the strip drives itself</p>
           </Reveal>
@@ -226,15 +226,15 @@ export default function ReelTheater() {
           </motion.div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-7xl px-5 pb-8 pt-4 md:px-8">
+        <div className="relative mx-auto w-full max-w-7xl px-5 pb-6 pt-2 md:pb-8 md:pt-4 md:px-8">
           <div className="flex items-end justify-between gap-4">
-            <p className="display text-2xl text-paper md:text-3xl">{reels[active].caption}</p>
+            <p className="display text-xl text-paper md:text-3xl">{reels[active].caption}</p>
             <p className="display text-2xl text-green md:text-3xl">
               {String(active + 1).padStart(2, "0")}
               <span className="text-faint">/{String(reels.length).padStart(2, "0")}</span>
             </p>
           </div>
-          <div className="mt-4 h-[3px] w-full bg-paper/10">
+          <div className="mt-3 md:mt-4 h-[3px] w-full bg-paper/10">
             <motion.div
               className="h-full origin-left bg-green"
               style={{ scaleX: barScale }}
