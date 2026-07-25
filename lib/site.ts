@@ -5,7 +5,8 @@
 export const site = {
   name: "Gus Renny",
   legalName: "GR Investment Group, LLC",
-  domain: "https://gusrenny.com",
+  /** current live home — flip to https://gusrenny.com at cutover */
+  domain: "https://gus.epicdevsolutions.com",
   tagline: "Builder. Investor. Operator.",
   description:
     "Gus Renny — Palm Beach entrepreneur. Three decades across real estate development, brokerage, insurance, and health. Founder of GR Investment Group.",
