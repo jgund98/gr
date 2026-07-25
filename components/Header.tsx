@@ -101,45 +101,55 @@ export default function Header() {
         </button>
       </div>
 
-      {/* mobile menu */}
+      {/* mobile menu — brand curtain, masked line-rise links */}
       <AnimatePresence>
         {open && (
           <motion.div
             className="fixed inset-0 z-[60] flex flex-col bg-ink lg:hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            initial={{ y: "-100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "-100%" }}
+            transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
           >
             <Glyph className="pointer-events-none absolute -right-[18%] top-1/2 h-[74vh] w-auto -translate-y-1/2 text-green opacity-[0.07]" />
             <nav
-              className="relative flex flex-1 flex-col justify-center gap-1 px-8"
+              className="relative flex flex-1 flex-col justify-center gap-2 px-8"
               aria-label="Mobile"
             >
               {[...links, { label: "Contact", href: "/contact" }].map((item, i) => (
-                <motion.div
-                  key={item.href}
-                  initial={{ opacity: 0, x: -24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.06 * i + 0.1, duration: 0.35 }}
-                >
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "block py-3 display text-5xl tracking-tight transition-colors",
-                      pathname === item.href ? "text-green" : "text-paper hover:text-green"
-                    )}
+                <div key={item.href} className="overflow-hidden">
+                  <motion.div
+                    initial={{ y: "110%" }}
+                    animate={{ y: 0 }}
+                    exit={{ y: "110%", transition: { duration: 0.25, delay: 0.02 * i } }}
+                    transition={{
+                      delay: 0.24 + 0.07 * i,
+                      duration: 0.6,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
                   >
-                    {item.label}
-                  </Link>
-                </motion.div>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "flex items-baseline gap-4 py-2 display text-5xl transition-colors",
+                        pathname === item.href ? "text-green" : "text-paper active:text-green"
+                      )}
+                    >
+                      <span className="label !text-[0.65rem] text-green/70">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                </div>
               ))}
             </nav>
             <motion.div
               className="relative border-t border-line px-8 py-7"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+              transition={{ delay: 0.5, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               <a href={site.phoneHref} className="block display text-2xl text-green">
                 {site.phone}
@@ -147,6 +157,7 @@ export default function Header() {
               <a href={`mailto:${site.email}`} className="mt-1 block text-mist">
                 {site.email}
               </a>
+              <p className="label mt-4 text-faint">GUSRENNY.COM&ensp;·&ensp;Est. 1997</p>
             </motion.div>
           </motion.div>
         )}
