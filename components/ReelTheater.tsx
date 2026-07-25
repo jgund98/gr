@@ -130,7 +130,7 @@ export default function ReelTheater() {
 
   return (
     <section ref={sectionRef} className="relative h-[430svh]">
-      <div className="sticky top-0 flex h-[100svh] flex-col overflow-hidden border-y border-line bg-ink-2 [--ch:50svh] md:[--ch:56svh]">
+      <div className="sticky top-0 flex h-[100svh] flex-col overflow-hidden border-y border-line bg-ink-2 [--ch:min(62svh,calc(100svh-290px))] md:[--ch:56svh]">
         {/* ambient backdrop — the room takes the clip's color */}
         <AnimatePresence>
           <motion.img

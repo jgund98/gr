@@ -87,17 +87,17 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* the sign-off: the name, edge to edge on every screen, clipped at the baseline */}
-      <div className="relative overflow-hidden" aria-hidden>
-        <svg viewBox="0 0 1200 96" className="block w-full">
+      {/* the sign-off: the name, edge to edge on every screen */}
+      <div className="relative overflow-hidden pb-2" aria-hidden>
+        <svg viewBox="0 0 1200 116" className="block w-full">
           <text
             x="600"
-            y="118"
+            y="108"
             textAnchor="middle"
             textLength="1176"
             lengthAdjust="spacingAndGlyphs"
             className="display"
-            style={{ fontSize: 150, fill: "rgba(136,192,71,0.92)" }}
+            style={{ fontSize: 138, fill: "rgba(136,192,71,0.92)" }}
           >
             GUSRENNY.COM
           </text>

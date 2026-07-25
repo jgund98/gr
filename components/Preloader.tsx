@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { GLYPH_W, GLYPH_H, glyphD, GLYPH_PERIMETER } from "@/lib/glyph";
 
@@ -12,15 +13,16 @@ export default function Preloader() {
   const [show, setShow] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const reduced = useReducedMotion();
+  const pathname = usePathname();
 
   useEffect(() => {
-    // plays on every full page load — the mark always draws itself in
-    if (reduced) return;
+    // the mark draws itself in on every HOME load — interior pages stay instant
+    if (reduced || pathname !== "/") return;
     setShow(true);
     document.documentElement.style.overflow = "hidden";
     const t = setTimeout(() => setLeaving(true), 2050);
     return () => clearTimeout(t);
-  }, [reduced]);
+  }, [reduced, pathname]);
 
   useEffect(() => {
     if (leaving) {

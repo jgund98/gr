@@ -82,7 +82,7 @@ export default function StoryPage() {
           <Chapter
             year="NY"
             title={<>Wired in New&nbsp;York.</>}
-            image="/site/gus-wide.webp"
+            image="/site/gus-chapter.webp"
             imageAlt="Gus Renny standing inside a gutted historic home mid-renovation"
             imageTop
           >
