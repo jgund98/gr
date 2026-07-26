@@ -145,20 +145,108 @@ export default function MaskHero() {
     };
   }, [geo, vp]);
 
-  // pause the film while it's off screen
+  /**
+   * The film must never be caught frozen inside the mark.
+   *
+   * Playback here cannot be assumed: browsers pause background video and
+   * don't always resume it, bfcache restores a page with the element
+   * paused, iOS Low Power Mode refuses autoplay outright until a touch,
+   * a rejected play() promise used to be swallowed forever, and a stalled
+   * range request can wedge the decoder mid-loop. So playback is
+   * supervised instead — a watchdog proves currentTime is actually
+   * advancing and escalates (nudge → reload) until the picture moves.
+   * Off screen it still parks, so nothing burns battery behind the fold.
+   */
   useEffect(() => {
     const el = ref.current;
     const vid = videoRef.current;
     if (!el || !vid) return;
+
+    let onScreen = true;
+    let busy = false;
+    let last = -1;
+    let strikes = 0;
+    const shouldPlay = () => onScreen && !document.hidden;
+
+    const kick = async (reload = false) => {
+      if (busy || !shouldPlay()) return;
+      busy = true;
+      try {
+        vid.muted = true; // autoplay is only ever granted to muted video
+        if (reload) vid.load();
+        await vid.play();
+        strikes = 0;
+      } catch {
+        /* blocked or not ready — the watchdog comes back around */
+      } finally {
+        busy = false;
+      }
+    };
+
     const io = new IntersectionObserver(
       ([e]) => {
-        if (e.isIntersecting) vid.play().catch(() => {});
+        onScreen = e.isIntersecting;
+        if (onScreen) kick();
         else vid.pause();
       },
       { threshold: 0 }
     );
     io.observe(el);
-    return () => io.disconnect();
+
+    const tick = window.setInterval(() => {
+      if (!shouldPlay()) return;
+      if (vid.paused || vid.ended) {
+        kick();
+        return;
+      }
+      if (vid.readyState < 2 || vid.currentTime === last) strikes++;
+      else strikes = 0;
+      last = vid.currentTime;
+      if (strikes === 2) kick();
+      else if (strikes >= 4) {
+        strikes = 0;
+        kick(true);
+      }
+    }, 1200);
+
+    const recover = () => {
+      void kick();
+    };
+    const hardRecover = () => {
+      void kick(true);
+    };
+    const first = () => {
+      void kick();
+    };
+
+    vid.addEventListener("pause", recover);
+    vid.addEventListener("stalled", recover);
+    vid.addEventListener("waiting", recover);
+    vid.addEventListener("ended", recover);
+    vid.addEventListener("error", hardRecover);
+    document.addEventListener("visibilitychange", recover);
+    window.addEventListener("pageshow", recover);
+    window.addEventListener("focus", recover);
+    // Low Power Mode only relents once the visitor touches the page
+    window.addEventListener("pointerdown", first, { once: true });
+    window.addEventListener("touchstart", first, { once: true, passive: true });
+
+    void kick();
+
+    return () => {
+      io.disconnect();
+      window.clearInterval(tick);
+      vid.removeEventListener("pause", recover);
+      vid.removeEventListener("stalled", recover);
+      vid.removeEventListener("waiting", recover);
+      vid.removeEventListener("ended", recover);
+      vid.removeEventListener("error", hardRecover);
+      document.removeEventListener("visibilitychange", recover);
+      window.removeEventListener("pageshow", recover);
+      window.removeEventListener("focus", recover);
+      window.removeEventListener("pointerdown", first);
+      window.removeEventListener("touchstart", first);
+    };
   }, []);
 
   // exponential zoom feels like flight, not interpolation
@@ -186,13 +274,16 @@ export default function MaskHero() {
           ref={videoRef}
           className="absolute inset-0 h-full w-full object-cover will-change-transform"
           style={reduced ? undefined : { scale: videoScale }}
-          src="/videos/hero-aerial.mp4"
-          poster="/site/hero-poster.webp"
+          src="/videos/hero-aerial-1080.mp4"
+          poster="/site/hero-poster-1080.webp"
           autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          disablePictureInPicture
+          /* the loop is short and it is the first thing anyone sees —
+             buffer it whole so it can never stall mid-flight */
+          preload="auto"
         />
         <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-ink/95 via-ink/40 to-transparent" />
 
