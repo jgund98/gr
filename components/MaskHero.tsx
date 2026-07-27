@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -28,6 +28,25 @@ export default function MaskHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const reduced = useReducedMotion();
   const [vp, setVp] = useState<{ w: number; h: number } | null>(null);
+  /**
+   * The mask ends up scaled ~50×, and a layer left sitting up there while the
+   * visitor reads the rest of the page can come back as the tiles the
+   * compositor rasterised at that scale — the mark's strokes drawn as black
+   * bars across the film. Repainting the canvas on the way back in reuploads
+   * its texture and settles it. (Unmounting the element instead would drop
+   * the layer too, but a remounted motion element re-renders from stale
+   * derived style, so the mask can return invisible.)
+   */
+  /**
+   * The mask ends up scaled ~50×. A layer left sitting up there while the
+   * visitor reads the rest of the page comes back as the tiles the compositor
+   * rasterised at that scale — the mark's strokes drawn as black bars across
+   * the film. Repainting the canvas does not clear them and neither does
+   * hiding it; only a new element gets a new layer. So it is unmounted while
+   * the hero is away.
+   */
+  const [onScreen, setOnScreen] = useState(true);
+  const repaintRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     let t: ReturnType<typeof setTimeout>;
@@ -68,6 +87,38 @@ export default function MaskHero() {
     const endScale = Math.min(64, (1.35 * Math.hypot(w, h)) / band);
     return { cw, ch, k, gx, gy, ox, oy, endScale };
   }, [vp]);
+
+  /**
+   * The mask's flight, written straight to the element.
+   *
+   * It cannot ride motion values like the rest of the hero: escaping the
+   * compositor's stale tiles means unmounting the canvas, and a remounted
+   * motion element does not re-bind its derived styles — it comes back
+   * frozen at whatever it read on the way out. Writing transform and
+   * opacity here means the mask is always in step with the live scroll
+   * position, including the frame it reappears on.
+   */
+  const applyMask = useCallback(
+    (p: number) => {
+      const c = canvasRef.current;
+      if (!c) return;
+      // exponential zoom feels like flight, not interpolation
+      const t = Math.min(1, Math.max(0, (p - 0.06) / 0.5));
+      const e = t * t * (3 - 2 * t);
+      c.style.transform = `scale(${Math.exp(Math.log(geo.endScale) * e)})`;
+      c.style.opacity = String(
+        p <= 0.52 ? 1 : p >= 0.62 ? 0 : 1 - (p - 0.52) / 0.1
+      );
+      // Promotion is for the flight only. Held across the whole page, the
+      // compositor keeps the raster it took at ~50x and paints that back at
+      // rest — the mark's strokes as black bars over the film. Releasing the
+      // hint at either end forces a fresh raster at the scale being shown.
+      c.style.willChange = p > 0.01 && p < 0.62 ? "transform" : "auto";
+    },
+    [geo.endScale]
+  );
+
+  useMotionValueEvent(scrollYProgress, "change", applyMask);
 
   // paint the overlay texture — self-healing: after painting we verify
   // the pixels (corner opaque, aperture transparent) and repaint until
@@ -131,6 +182,10 @@ export default function MaskHero() {
     paint();
     raf = requestAnimationFrame(ensure);
 
+    // a freshly mounted canvas starts unstyled — put it in step at once
+    applyMask(scrollYProgress.get());
+    const resync = requestAnimationFrame(() => applyMask(scrollYProgress.get()));
+
     const onRestore = () => {
       tries = 0;
       paint();
@@ -138,12 +193,15 @@ export default function MaskHero() {
     };
     document.addEventListener("visibilitychange", onRestore);
     window.addEventListener("pageshow", onRestore);
+    repaintRef.current = onRestore;
     return () => {
       cancelAnimationFrame(raf);
+      cancelAnimationFrame(resync);
       document.removeEventListener("visibilitychange", onRestore);
       window.removeEventListener("pageshow", onRestore);
+      repaintRef.current = null;
     };
-  }, [geo, vp]);
+  }, [geo, vp, onScreen, scrollYProgress, applyMask]);
 
   /**
    * The film must never be caught frozen inside the mark.
@@ -186,8 +244,15 @@ export default function MaskHero() {
     const io = new IntersectionObserver(
       ([e]) => {
         onScreen = e.isIntersecting;
-        if (onScreen) kick();
-        else vid.pause();
+        setOnScreen(e.isIntersecting);
+        if (onScreen) {
+          kick();
+          // returning to the hero: take a new layer and a new texture rather
+          // than trusting whatever the compositor kept while we were away
+          repaintRef.current?.();
+        } else {
+          vid.pause();
+        }
       },
       { threshold: 0 }
     );
@@ -249,13 +314,6 @@ export default function MaskHero() {
     };
   }, []);
 
-  // exponential zoom feels like flight, not interpolation
-  const scale = useTransform(scrollYProgress, (p) => {
-    const t = Math.min(1, Math.max(0, (p - 0.06) / 0.5));
-    const e = t * t * (3 - 2 * t);
-    return Math.exp(Math.log(geo.endScale) * e);
-  });
-  const maskOpacity = useTransform(scrollYProgress, [0.52, 0.62], [1, 0]);
   const videoScale = useTransform(scrollYProgress, [0, 1], [1.12, 1]);
 
   // stage text is state-driven: entrances/exits play out in full no
@@ -288,17 +346,15 @@ export default function MaskHero() {
         <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-ink/95 via-ink/40 to-transparent" />
 
         {/* the mark as aperture — static texture, GPU-scaled */}
-        {!reduced && vp && (
+        {!reduced && vp && onScreen && (
           <motion.canvas
             ref={canvasRef}
-            className="absolute will-change-transform"
+            className="absolute"
             style={{
               width: geo.cw,
               height: geo.ch,
               left: -(geo.cw - vp.w) / 2,
               top: -(geo.ch - vp.h) / 2,
-              scale,
-              opacity: maskOpacity,
               transformOrigin: `${geo.ox}px ${geo.oy}px`,
             }}
             aria-hidden
