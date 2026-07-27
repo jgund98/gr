@@ -89,119 +89,98 @@ export default function MaskHero() {
   }, [vp]);
 
   /**
-   * The mask's flight, written straight to the element.
+   * The flight is drawn, not transformed.
    *
-   * It cannot ride motion values like the rest of the hero: escaping the
-   * compositor's stale tiles means unmounting the canvas, and a remounted
-   * motion element does not re-bind its derived styles — it comes back
-   * frozen at whatever it read on the way out. Writing transform and
-   * opacity here means the mask is always in step with the live scroll
-   * position, including the frame it reappears on.
+   * Scaling the canvas element is what produced the black bars: the
+   * compositor rasterises a promoted layer once and thereafter only
+   * transforms it, so after a fifty-fold zoom it keeps handing that raster
+   * back — the mark's strokes blown up across the film. Redrawing the
+   * aperture at its true size each frame keeps the canvas 1:1 with the
+   * screen, so there is no raster that can go stale: not at rest, and not
+   * mid-flight in either direction.
    */
-  const applyMask = useCallback(
+  const glyphPath = useMemo(() => {
+    if (typeof Path2D === "undefined") return null; // prerender has no canvas
+    const path = new Path2D();
+    GLYPH_POINTS.forEach(([px, py], i) => {
+      const x = geo.gx + px * geo.k;
+      const y = geo.gy + py * geo.k;
+      if (i === 0) path.moveTo(x, y);
+      else path.lineTo(x, y);
+    });
+    path.closePath();
+    return path;
+  }, [geo]);
+
+  const drawMask = useCallback(
     (p: number) => {
       const c = canvasRef.current;
       if (!c) return;
+      const ctx = c.getContext("2d");
+      if (!ctx || !glyphPath) return;
+      const o = p <= 0.52 ? 1 : p >= 0.62 ? 0 : 1 - (p - 0.52) / 0.1;
+      c.style.opacity = String(o);
+      if (o <= 0) return; // invisible — nothing worth drawing
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       // exponential zoom feels like flight, not interpolation
       const t = Math.min(1, Math.max(0, (p - 0.06) / 0.5));
       const e = t * t * (3 - 2 * t);
-      c.style.transform = `scale(${Math.exp(Math.log(geo.endScale) * e)})`;
-      c.style.opacity = String(
-        p <= 0.52 ? 1 : p >= 0.62 ? 0 : 1 - (p - 0.52) / 0.1
-      );
-      // Promotion is for the flight only. Held across the whole page, the
-      // compositor keeps the raster it took at ~50x and paints that back at
-      // rest — the mark's strokes as black bars over the film. Releasing the
-      // hint at either end forces a fresh raster at the scale being shown.
-      c.style.willChange = p > 0.01 && p < 0.62 ? "transform" : "auto";
-    },
-    [geo.endScale]
-  );
-
-  useMotionValueEvent(scrollYProgress, "change", applyMask);
-
-  // paint the overlay texture — self-healing: after painting we verify
-  // the pixels (corner opaque, aperture transparent) and repaint until
-  // correct, and repaint again whenever the browser may have purged the
-  // canvas backing store (tab restore, bfcache). Whatever the failure
-  // mode, the mask converges to the correct state.
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !vp) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-    const paint = (): boolean => {
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return false;
-      canvas.width = Math.round(geo.cw * dpr);
-      canvas.height = Math.round(geo.ch * dpr);
+      const s = Math.exp(Math.log(geo.endScale) * e);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.globalCompositeOperation = "source-over";
       ctx.clearRect(0, 0, geo.cw, geo.ch);
       ctx.fillStyle = "#0b0e09";
       ctx.fillRect(0, 0, geo.cw, geo.ch);
-      const path = new Path2D();
-      GLYPH_POINTS.forEach(([px, py], i) => {
-        const x = geo.gx + px * geo.k;
-        const y = geo.gy + py * geo.k;
-        if (i === 0) path.moveTo(x, y);
-        else path.lineTo(x, y);
-      });
-      path.closePath();
+      ctx.save();
+      ctx.translate(geo.ox, geo.oy);
+      ctx.scale(s, s);
+      ctx.translate(-geo.ox, -geo.oy);
       ctx.globalCompositeOperation = "destination-out";
-      ctx.fill(path);
+      ctx.fill(glyphPath);
+      ctx.restore();
       ctx.globalCompositeOperation = "source-over";
-      return true;
+    },
+    [geo, glyphPath]
+  );
+
+  // one draw per frame however many scroll events land in it
+  const frameRef = useRef(0);
+  const schedule = useCallback(
+    (p: number) => {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = requestAnimationFrame(() => drawMask(p));
+    },
+    [drawMask]
+  );
+  useMotionValueEvent(scrollYProgress, "change", schedule);
+
+  /** size the canvas, put it in step, and rebuild it if the browser drops it */
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !vp) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const size = () => {
+      canvas.width = Math.round(geo.cw * dpr);
+      canvas.height = Math.round(geo.ch * dpr);
     };
-
-    const healthy = (): boolean => {
-      try {
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return false;
-        const corner = ctx.getImageData(2, 2, 1, 1).data[3];
-        const eye = ctx.getImageData(
-          Math.min(canvas.width - 1, Math.round(geo.ox * dpr)),
-          Math.min(canvas.height - 1, Math.round(geo.oy * dpr)),
-          1,
-          1
-        ).data[3];
-        return corner > 200 && eye < 40;
-      } catch {
-        return true; // can't read? assume fine rather than loop forever
-      }
-    };
-
-    let tries = 0;
-    let raf = 0;
-    const ensure = () => {
-      if (healthy() || tries >= 6) return;
-      tries++;
-      paint();
-      raf = requestAnimationFrame(ensure);
-    };
-    paint();
-    raf = requestAnimationFrame(ensure);
-
-    // a freshly mounted canvas starts unstyled — put it in step at once
-    applyMask(scrollYProgress.get());
-    const resync = requestAnimationFrame(() => applyMask(scrollYProgress.get()));
-
+    size();
+    drawMask(scrollYProgress.get());
+    const raf = requestAnimationFrame(() => drawMask(scrollYProgress.get()));
     const onRestore = () => {
-      tries = 0;
-      paint();
-      raf = requestAnimationFrame(ensure);
+      size(); // a purged backing store comes back blank
+      drawMask(scrollYProgress.get());
     };
     document.addEventListener("visibilitychange", onRestore);
     window.addEventListener("pageshow", onRestore);
     repaintRef.current = onRestore;
     return () => {
       cancelAnimationFrame(raf);
-      cancelAnimationFrame(resync);
+      cancelAnimationFrame(frameRef.current);
       document.removeEventListener("visibilitychange", onRestore);
       window.removeEventListener("pageshow", onRestore);
       repaintRef.current = null;
     };
-  }, [geo, vp, onScreen, scrollYProgress, applyMask]);
+  }, [geo, vp, onScreen, scrollYProgress, drawMask]);
 
   /**
    * The film must never be caught frozen inside the mark.
@@ -319,8 +298,10 @@ export default function MaskHero() {
   // stage text is state-driven: entrances/exits play out in full no
   // matter how hard the visitor throws the scroll
   const [act, setAct] = useState<0 | 1>(0);
+  // separate thresholds each way: a single one sits right where the reverse
+  // flight lingers, and the line flickers as it crosses back and forth
   useMotionValueEvent(scrollYProgress, "change", (p) => {
-    const next = p >= 0.56 ? 1 : 0;
+    const next: 0 | 1 = act === 0 ? (p >= 0.58 ? 1 : 0) : p <= 0.48 ? 0 : 1;
     if (next !== act) setAct(next);
   });
 
@@ -355,7 +336,6 @@ export default function MaskHero() {
               height: geo.ch,
               left: -(geo.cw - vp.w) / 2,
               top: -(geo.ch - vp.h) / 2,
-              transformOrigin: `${geo.ox}px ${geo.oy}px`,
             }}
             aria-hidden
           />
